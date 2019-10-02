@@ -1,30 +1,43 @@
 'use strict';
 
 const express = require('express');
-const cors = require('cors');
+const bodyParser = require('body-parser');
 const superagent = require('superagent');
-
-
+const morgan = require('morgan');
+const cors = require('cors');
+const server = express();
 require('dotenv').config();
 
-const server = express();
+server.use(cors());
+server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({ extended: true }));
 
-// server.get('/express_backend', (request, response) => {
-//   response.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' });
-// });
+const errorHandler = require('./middleware/server-error');
+const notFound = require('./middleware/not-found');
+const authRouter = require('./routes/auth.js');
 
-server.get('/search', renderSearchPage);
+server.use(authRouter);
+server.use('*', notFound);
+server.use(errorHandler);
+
+
+server.post('/hello', (req, res) => {
+  console.log(req.body);
+  res.text = req.body;
+  res.send({ express: req.body});
+});
+
+server.post('/search', renderSearchPage);
 
 function renderSearchPage(request, response, next){
-  let URL = `https://tastedive.com/api/similar?q=red+hot+chili+peppers%2C+pulp+fiction&k=${process.env.TASTEDIVEKEY}`;
-  console.log(URL);
+  let URL = `https://tastedive.com/api/similar?q=${request.body.selectedArtist}&k=${process.env.TASTEDIVEKEY}`;
   return superagent.get(URL)
     .then(apiResponse => {
       let artistArray = [];
       for(let i = 0; i < apiResponse.body.Similar.Results.length; i++){
         artistArray.push(apiResponse.body.Similar.Results[i].Name);
       }
-      response.json({ artistArray });
+      response.send([artistArray]);
       console.log(artistArray);
     })
     .catch(error => new Error);
