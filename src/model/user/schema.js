@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const SECRET = process.env.SECRET || 'foobar';
+const SECRET = process.env.SECRET || 'secret';
 
 const user = mongoose.Schema({
   username: { type: String, required: true, unique: true },
@@ -15,7 +15,7 @@ const user = mongoose.Schema({
 const capabilities = {
   admin: ['create', 'read', 'update', 'delete'],
   editor: ['create', 'read', 'update'],
-  user: ['rad'],
+  user: ['create','read','update', 'delete' ],
 };
 
 
@@ -28,6 +28,7 @@ user.pre('save', async function () {
 
 user.statics.authenticateToken = function (token) {
   try {
+    console.log(token);
     let parsedToken = jwt.verify(token, SECRET);
     let query = { _id: parsedToken.id };
     return this.findOne(query);

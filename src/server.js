@@ -17,20 +17,13 @@ const notFound = require('./middleware/not-found');
 const authRouter = require('./routes/auth.js');
 
 server.use(authRouter);
+server.post('/search', renderSearchPage);
 server.use('*', notFound);
 server.use(errorHandler);
 
-
-server.post('/hello', (req, res) => {
-  console.log(req.body);
-  res.text = req.body;
-  res.send({ express: req.body});
-});
-
-server.post('/search', renderSearchPage);
-
 function renderSearchPage(request, response, next){
   let URL = `https://tastedive.com/api/similar?q=${request.body.selectedArtist}&k=${process.env.TASTEDIVEKEY}`;
+  console.log(URL);
   return superagent.get(URL)
     .then(apiResponse => {
       let artistArray = [];
