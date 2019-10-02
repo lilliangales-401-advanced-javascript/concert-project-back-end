@@ -2,14 +2,24 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 const superagent = require('superagent');
+const morgan = require('morgan');
+const cors = require('cors');
 const server = express();
 require('dotenv').config();
 
 server.use(cors());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
+
+const errorHandler = require('./middleware/server-error');
+const notFound = require('./middleware/not-found');
+const authRouter = require('./routes/auth.js');
+
+server.use(authRouter);
+server.use('*', notFound);
+server.use(errorHandler);
+
 
 server.post('/hello', (req, res) => {
   console.log(req.body);
