@@ -14,7 +14,6 @@ const user = mongoose.Schema({
  
 const capabilities = {
   admin: ['create', 'read', 'update', 'delete'],
-  editor: ['create', 'read', 'update'],
   user: ['create','read','update', 'delete' ],
 };
 

@@ -15,8 +15,10 @@ server.use(bodyParser.urlencoded({ extended: true }));
 const errorHandler = require('./middleware/server-error');
 const notFound = require('./middleware/not-found');
 const authRouter = require('./routes/auth.js');
+const apiRouter = require('./routes/api.js');
 
 server.use(authRouter);
+server.use(apiRouter);
 server.post('/search', renderSearchPage);
 server.use('*', notFound);
 server.use(errorHandler);
