@@ -27,7 +27,6 @@ user.pre('save', async function () {
 
 user.statics.authenticateToken = function (token) {
   try {
-    console.log(token);
     let parsedToken = jwt.verify(token, SECRET);
     let query = { _id: parsedToken.id };
     return this.findOne(query);

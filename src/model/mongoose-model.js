@@ -6,7 +6,7 @@ class DataModel {
   }
 
   get(id) {
-    let query = id ? { _id: id } : {};
+    let query = id ? { id: id } : {};
     return this.schema.find(query);
   }
 
@@ -16,14 +16,14 @@ class DataModel {
   }
 
   put(id, record) {
-    const filter = { _id: id };
+    const filter = { id: id };
     const update = record;
-
+    console.log(filter, update, '!!!!!!!!!!!!!!!!!');
     return this.schema.findOneAndUpdate(filter, update);
   }
 
   delete(id) {
-    const filter = { _id: id };
+    const filter = { id: id };
     return this.schema.findOneAndDelete(filter);
   }
 }
