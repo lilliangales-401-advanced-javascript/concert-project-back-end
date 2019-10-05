@@ -3,6 +3,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const Concert = require('../concerts/schema');
 
 const SECRET = process.env.SECRET || 'secret';
 
@@ -22,6 +23,18 @@ user.pre('save', async function () {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, 10);
   }
+});
+
+user.virtual('concerts', {
+  ref: 'concerts',
+  localField: 'username',
+  foreignField: 'username',
+  justOne: false,
+});
+
+user.pre('find', function(next) {
+  this.populate('concerts');
+  next();
 });
 
 

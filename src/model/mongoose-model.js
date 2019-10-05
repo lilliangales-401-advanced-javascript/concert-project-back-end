@@ -18,7 +18,6 @@ class DataModel {
   put(id, record) {
     const filter = { id: id };
     const update = record;
-    console.log(filter, update, '!!!!!!!!!!!!!!!!!');
     return this.schema.findOneAndUpdate(filter, update);
   }
 
